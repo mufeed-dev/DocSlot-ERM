@@ -5,7 +5,9 @@ const config = require("./config/config");
 const dbConnection = require("./config/database");
 const logger = require("./utils/logger");
 const { setupMiddleware } = require("./middlewares/setup");
+const setupRoutes = require("./routes");
 const { notFound, errorHandler } = require("./middlewares/errorHandler");
+const { seedAdmin } = require("./utils/seeder");
 const { initializeSocket } = require("./utils/socket");
 
 class Server {
@@ -23,8 +25,14 @@ class Server {
       // Initialize Socket.IO
       initializeSocket(this.server);
 
+      // Seed Default Administrator
+      await seedAdmin();
+
       // Setup Middlewares
       setupMiddleware(this.app);
+
+      // Setup Routes
+      setupRoutes(this.app);
 
       // Error Handlers
       this.app.use(notFound);

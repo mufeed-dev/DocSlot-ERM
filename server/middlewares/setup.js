@@ -63,4 +63,18 @@ const setupMiddleware = (app) => {
   });
 };
 
-module.exports = { setupMiddleware };
+const createAuthLimiter = () => {
+  return rateLimit({
+    windowMs: config.RATE_LIMIT.WINDOWMS,
+    max: config.RATE_LIMIT.AUTH_MAX,
+    message: {
+      success: false,
+      message:
+        "Too many authentication attempts from this IP, please try again after 15 minutes",
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+};
+
+module.exports = { setupMiddleware, createAuthLimiter };
