@@ -30,6 +30,49 @@ const loginValidation = Joi.object({
   password: Joi.string().required(),
 }).messages(customMessages);
 
+const doctorValidation = Joi.object({
+  name: commonPatterns.name,
+  email: commonPatterns.email,
+  password: commonPatterns.password,
+  department: Joi.string().min(2).max(100).trim().required(),
+  specialization: Joi.string().min(2).max(100).trim().required(),
+  qualification: Joi.string().min(2).max(100).trim().required(),
+  phone: Joi.string().min(10).max(15).trim().required(),
+}).messages(customMessages);
+
+const sessionSchema = Joi.object({
+  startTime: Joi.string()
+    .pattern(/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/)
+    .required()
+    .messages({
+      "string.pattern.base": "Start time must be in HH:MM format",
+    }),
+  endTime: Joi.string()
+    .pattern(/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/)
+    .required()
+    .messages({
+      "string.pattern.base": "End time must be in HH:MM format",
+    }),
+});
+
+const scheduleValidation = Joi.object({
+  doctor: commonPatterns.objectId.required(),
+  workingDays: Joi.array()
+    .items(Joi.number().integer().min(0).max(6))
+    .min(1)
+    .required()
+    .messages({
+      "array.min": "At least one working day is required",
+    }),
+  slotDuration: Joi.number().integer().min(5).max(120).required(),
+  sessions: Joi.array().items(sessionSchema).min(1).required().messages({
+    "array.min": "At least one session is required",
+  }),
+  breaks: Joi.array().items(sessionSchema).optional(),
+}).messages(customMessages);
+
 module.exports = {
   loginValidation,
+  doctorValidation,
+  scheduleValidation,
 };

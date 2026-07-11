@@ -44,4 +44,22 @@ const authenticateUser = async (req, res, next) => {
   }
 };
 
-module.exports = { authenticateUser };
+const authorizeRoles = (...allowedRoles) => {
+  return (req, res, next) => {
+    if (!req.user) {
+      return next(new AuthenticationError("Authentication required."));
+    }
+
+    if (!allowedRoles.includes(req.user.role)) {
+      return next(
+        new AuthorizationError(
+          "Access denied. You do not have permission to perform this action.",
+        ),
+      );
+    }
+
+    next();
+  };
+};
+
+module.exports = { authenticateUser, authorizeRoles };
