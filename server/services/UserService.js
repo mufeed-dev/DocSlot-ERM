@@ -34,7 +34,11 @@ class UserService {
   static async getUsers(role = "") {
     try {
       const query = { isActive: true };
-      if (role) query.role = role;
+      if (role) {
+        query.role = role;
+      } else {
+        query.role = { $in: ["doctor", "receptionist"] };
+      }
 
       const users = await User.find(query)
         .select("-password -refreshTokens")

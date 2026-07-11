@@ -23,14 +23,17 @@ class AuditService {
 
   static async getLogs({ page = 1, limit = 50 }) {
     try {
+      const query = {
+        action: { $nin: ["USER_LOGGED_IN", "USER_LOGGED_OUT", "TOKEN_REFRESHED"] }
+      };
       const skip = (page - 1) * limit;
       const [logs, total] = await Promise.all([
-        AuditLog.find()
+        AuditLog.find(query)
           .populate("user", "name email role")
           .sort({ timestamp: -1 })
           .skip(skip)
           .limit(limit),
-        AuditLog.countDocuments(),
+        AuditLog.countDocuments(query),
       ]);
 
       return {

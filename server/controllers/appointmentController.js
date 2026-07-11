@@ -156,8 +156,6 @@ class AppointmentController extends BaseController {
   static cancel = BaseController.asyncHandler(async (req, res) => {
     const { reason } = req.body;
 
-    const appointment = await AppointmentService.getById(req.params.id);
-
     // Doctors cannot cancel appointments per receptionist/superadmin requirements
     if (req.user.role === "doctor") {
       throw new AuthorizationError(
@@ -183,8 +181,6 @@ class AppointmentController extends BaseController {
   });
 
   static markArrived = BaseController.asyncHandler(async (req, res) => {
-    const appointment = await AppointmentService.getById(req.params.id);
-
     // Mark as arrived: Receptionist and Super Admin only
     if (req.user.role === "doctor") {
       throw new AuthorizationError(
