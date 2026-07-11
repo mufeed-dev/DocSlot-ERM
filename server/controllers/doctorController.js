@@ -12,7 +12,10 @@ class DoctorController extends BaseController {
     const doctor = await DoctorService.create(validatedData);
 
     BaseController.logAction("DOCTOR_CREATED", {
-      doctorId: doctor._id,
+      user: req.user,
+      entity: "Doctor",
+      entityId: doctor._id,
+      ipAddress: req.ip,
       email: validatedData.email,
       requestId: res.locals.requestId || null,
     });

@@ -52,6 +52,20 @@ class BaseController {
 
   static logAction(action, details = {}) {
     logger.info(`Action: ${action}`, details);
+
+    // Asynchronously log to the database
+    const AuditService = require("../services/AuditService");
+    AuditService.log({
+      user: details.user ? details.user._id : details.userId || null,
+      role: details.user ? details.user.role : details.role || "system",
+      action,
+      entity: details.entity || "System",
+      entityId: details.entityId || null,
+      details: details.extra || details,
+      ipAddress: details.ipAddress || "",
+    }).catch((err) => {
+      logger.error("Audit log saving promise failed:", err.message);
+    });
   }
 }
 

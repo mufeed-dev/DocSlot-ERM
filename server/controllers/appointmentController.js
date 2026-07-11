@@ -20,7 +20,10 @@ class AppointmentController extends BaseController {
     );
 
     BaseController.logAction("APPOINTMENT_CREATED", {
-      appointmentId: appointment._id,
+      user: req.user,
+      entity: "Appointment",
+      entityId: appointment._id,
+      ipAddress: req.ip,
       patientId: appointment.patient._id,
       doctorId: appointment.doctor._id,
       requestId: res.locals.requestId || null,
@@ -136,8 +139,10 @@ class AppointmentController extends BaseController {
     );
 
     BaseController.logAction("APPOINTMENT_UPDATED", {
-      appointmentId: updated._id,
-      updatedBy: req.user._id,
+      user: req.user,
+      entity: "Appointment",
+      entityId: updated._id,
+      ipAddress: req.ip,
       requestId: res.locals.requestId || null,
     });
 
@@ -163,8 +168,10 @@ class AppointmentController extends BaseController {
     const cancelled = await AppointmentService.cancel(req.params.id, reason);
 
     BaseController.logAction("APPOINTMENT_CANCELLED", {
-      appointmentId: cancelled._id,
-      cancelledBy: req.user._id,
+      user: req.user,
+      entity: "Appointment",
+      entityId: cancelled._id,
+      ipAddress: req.ip,
       requestId: res.locals.requestId || null,
     });
 
@@ -188,8 +195,10 @@ class AppointmentController extends BaseController {
     const arrived = await AppointmentService.markArrived(req.params.id);
 
     BaseController.logAction("PATIENT_MARKED_ARRIVED", {
-      appointmentId: arrived._id,
-      updatedBy: req.user._id,
+      user: req.user,
+      entity: "Appointment",
+      entityId: arrived._id,
+      ipAddress: req.ip,
       requestId: res.locals.requestId || null,
     });
 

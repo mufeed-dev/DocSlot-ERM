@@ -12,6 +12,10 @@ class ScheduleController extends BaseController {
     const schedule = await ScheduleService.createOrUpdate(validatedData);
 
     BaseController.logAction("SCHEDULE_CONFIGURED", {
+      user: req.user,
+      entity: "DoctorSchedule",
+      entityId: schedule._id,
+      ipAddress: req.ip,
       doctorId: validatedData.doctor,
       requestId: res.locals.requestId || null,
     });
