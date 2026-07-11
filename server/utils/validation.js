@@ -71,8 +71,49 @@ const scheduleValidation = Joi.object({
   breaks: Joi.array().items(sessionSchema).optional(),
 }).messages(customMessages);
 
+const patientValidation = Joi.object({
+  name: commonPatterns.name,
+  email: Joi.string().email().lowercase().trim().allow("").optional(),
+  phone: Joi.string().min(10).max(15).trim().required(),
+  dateOfBirth: Joi.date().less("now").required(),
+  gender: Joi.string().valid("male", "female", "other").required(),
+  address: Joi.string().max(500).trim().allow("").optional(),
+}).messages(customMessages);
+
+const appointmentValidation = Joi.object({
+  patient: Joi.alternatives()
+    .try(
+      commonPatterns.objectId, // existing patient ID
+      patientValidation, // new patient registration object
+    )
+    .required(),
+  doctor: commonPatterns.objectId.required(),
+  department: Joi.string().min(2).max(100).trim().required(),
+  date: Joi.date().iso().required(),
+  slotTime: Joi.string()
+    .pattern(/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/)
+    .required()
+    .messages({
+      "string.pattern.base": "Slot time must be in HH:MM format",
+    }),
+  purpose: Joi.string().max(500).trim().allow("").optional(),
+  notes: Joi.string().max(2000).trim().allow("").optional(),
+}).messages(customMessages);
+
+const appointmentUpdateValidation = Joi.object({
+  purpose: Joi.string().max(500).trim().optional(),
+  notes: Joi.string().max(2000).trim().optional(),
+  status: Joi.string()
+    .valid("scheduled", "arrived", "completed", "cancelled")
+    .optional(),
+  cancelReason: Joi.string().max(500).trim().optional(),
+}).messages(customMessages);
+
 module.exports = {
   loginValidation,
   doctorValidation,
   scheduleValidation,
+  patientValidation,
+  appointmentValidation,
+  appointmentUpdateValidation,
 };
