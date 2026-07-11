@@ -7,6 +7,7 @@ const slotRoutes = require("./slot");
 const patientRoutes = require("./patient");
 const appointmentRoutes = require("./appointment");
 const auditRoutes = require("./audit");
+const userRoutes = require("./user");
 
 const setupRoutes = (app) => {
   const authLimiter = createAuthLimiter();
@@ -21,6 +22,7 @@ const setupRoutes = (app) => {
   app.use("/api/v1/patients", patientRoutes);
   app.use("/api/v1/appointments", appointmentRoutes);
   app.use("/api/v1/audit", auditRoutes);
+  app.use("/api/v1/users", userRoutes);
 };
 
 module.exports = setupRoutes;

@@ -30,6 +30,13 @@ const loginValidation = Joi.object({
   password: Joi.string().required(),
 }).messages(customMessages);
 
+const userCreateValidation = Joi.object({
+  name: commonPatterns.name,
+  email: commonPatterns.email,
+  password: commonPatterns.password,
+  role: Joi.string().valid("doctor", "receptionist").required(),
+}).messages(customMessages);
+
 const doctorValidation = Joi.object({
   name: commonPatterns.name,
   email: commonPatterns.email,
@@ -111,6 +118,7 @@ const appointmentUpdateValidation = Joi.object({
 
 module.exports = {
   loginValidation,
+  userCreateValidation,
   doctorValidation,
   scheduleValidation,
   patientValidation,
